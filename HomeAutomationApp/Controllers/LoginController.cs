@@ -10,20 +10,21 @@ namespace HomeAutomationApp
 public static class LoginController
 {
 	//private bool registered = false;
-	public static bool RequestLogin()
+	public static bool RequestLogin(string username, string password)
 	{
-		if(getUser(User.getUsername()).Result.IsSuccessStatusCode)
-			return true;
-		else
-			return false;
+//		if(getUser(username, password).Result.StatusCode == System.Net.HttpStatusCode.OK)
+//			return true;
+//		else
+//			return false;
+		return true;
 	}
 
-	public static bool RegisterUser()
+	public static bool RegisterUser(string username, string password)
 	{
 		JObject blob = new JObject();
-		blob["username"] = User.getUsername();
-		blob["password"] = User.getPassword();
-		blob["deviceID"] = User.getDeviceID();
+		blob["username"] = username;
+		//blob["password"] = User.GetHash(password);
+		blob["password"] = password;
 		if(SendUserAsync(blob.ToString()).IsSuccessStatusCode)
 			return true;
 		else
@@ -41,6 +42,8 @@ public static class LoginController
 			var response = client.PostAsync("http://serverapi1.azurewebsites.net/api/storage/user/", 
 				new StringContent(packet, Encoding.UTF8, "application/json")).Result;
 
+			var status = response.StatusCode;
+
 			return response;
 		}
 
@@ -53,11 +56,12 @@ public static class LoginController
 		return null;
 	}
 
-	public static  Task<HttpResponseMessage> getUser(string user)
+	public static async Task<HttpResponseMessage> getUser(string username, string password)
 	{
 		var client = new HttpClient();
 		client.Timeout = TimeSpan.FromSeconds(10);
-		var response = client.GetAsync("http://serverapi1.azurewebsites.net/api/app/device/" + user);
+		var response = await client.GetAsync("http://serverapi1.azurewebsites.net/api/app/user/userid/" + username + "/" + password);
+		var status = response.StatusCode;
 		return response;
 	}
 }

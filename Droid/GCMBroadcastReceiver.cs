@@ -34,7 +34,7 @@ namespace HomeAutomationApp.Droid
 			
 			GCMModel.setDeviceID(registrationId);
 			User.setDeviceID(registrationId);
-			GCMModel.SendTokenAsync(registrationId, User.getUsername());
+			GCMModel.SendTokenAsync(registrationId);
 		}
 
 		protected override void OnUnRegistered (Context context, string registrationId)

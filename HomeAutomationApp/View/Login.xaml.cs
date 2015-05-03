@@ -21,7 +21,7 @@ public partial class Login : ContentPage
 				Text.Text = "Provide a username and passoword";
 			else{
 				//Navigation.PushAsync(new MainTabbedView());
-				if(LoginController.RequestLogin()){
+				if(LoginController.RequestLogin(UserField.Text, PassField.Text)){
 					Text.Text = "Logged In";
 					User.setUsername(UserField.Text);
 					User.setPassword(PassField.Text);
@@ -35,8 +35,9 @@ public partial class Login : ContentPage
 			if(UserField.Text == "" || PassField.Text == "")
 				Text.Text = "Provide a username and passoword";
 			else{
-				if(LoginController.RegisterUser())
-					Text.Text = "Registration Completed!";
+				if(LoginController.RegisterUser(UserField.Text, PassField.Text)){
+					Text.Text = "Registration Completed!, Please Login";
+				}
 				else
 					Text.Text = "Registration Failed";
 			}

@@ -51,7 +51,7 @@ public class Test
 		User.setUsername(username);
 		User.setPassword(password);
 
-		Assert.IsFalse(LoginController.RequestLogin());
+		Assert.IsTrue(LoginController.RequestLogin(username, password));
 	}
 
 	[Test ()]
@@ -60,9 +60,7 @@ public class Test
 		const string username = "test";
 		const string password = "test_password";
 
-		User.setUsername(username);
-		User.setPassword(password);
-		Assert.IsTrue(LoginController.RegisterUser());
+		Assert.IsTrue(LoginController.RegisterUser(username, password));
 	}
 
 	[Test ()]

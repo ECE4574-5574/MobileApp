@@ -22,7 +22,7 @@ public static class GCMModel
 	private static string deviceID;
 	private static Context c;
 	private static bool registered;
-	const string TAG = "GCM-Controller";
+	const string TAG = "GCM-Client";
 	public static void Init(Context context)
 	{
 		c = context;
@@ -60,17 +60,22 @@ public static class GCMModel
 		return registered;
 	}
 
-	public static HttpResponseMessage SendTokenAsync(string packet, string user)
+	public static HttpResponseMessage SendTokenAsync(string token)
 	{
 		try
 		{
 			var client = new HttpClient();
 			client.Timeout = TimeSpan.FromSeconds(10);
 
-			Log.Info(TAG, "HAD: URL: " + ConfigModel.Url);
-			client.BaseAddress = new Uri(ConfigModel.Url);
+			JObject blob = new JObject();
+			blob["deviceToken"] = token;
 
-			var response = client.PostAsync("http://serverapi1.azurewebsites/api/app/user/devicetoken/" + User.getUsername() + "/" + User.getPassword(), 
+			var packet = blob.ToString();
+			var username = User.getUsername();
+			var password = User.getPassword();
+			Log.Info(TAG, password);
+
+			var response = client.PostAsync("http://serverapi1.azurewebsites.net/api/app/user/devicetoken/" + User.getUsername() + "/" + User.getPassword(), 
 				new StringContent(packet, Encoding.UTF8, "application/json")).Result;
 
 			return response;
@@ -85,7 +90,7 @@ public static class GCMModel
 		return null;
 	}
 
-	public static HttpResponseMessage SendNotifyAsync()
+	public static HttpResponseMessage SendNotifyAsync(string message)
 	{
 		try
 		{
@@ -93,11 +98,11 @@ public static class GCMModel
 			client.Timeout = TimeSpan.FromSeconds(10);
 
 			JObject blob = new JObject();
+			blob["message"] = message;
 			blob["deviceToken"] = GCMModel.getDeviceID();
-			blob["platform"] = "GCM";
 
 			string packet = blob.ToString();
-			var response = client.PostAsync("http://serverapi1.azurewebsites/api/app/user/notify/" + User.getUsername() + "/" + User.getPassword(), 
+			var response = client.PostAsync("http://serverapi1.azurewebsites.net/api/app/user/notify/" + User.getUsername() + "/" + User.getPassword(), 
 				new StringContent(packet, Encoding.UTF8, "application/json")).Result;
 
 			return response;
