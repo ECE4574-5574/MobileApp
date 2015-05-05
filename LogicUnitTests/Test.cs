@@ -31,7 +31,7 @@ public class Test
 		blob["long"] = 84.345;
 		blob["alt"] = 45.3454;
 		blob["time"] = timeStamp;
-		Assert.IsTrue(voiceController.makeItBrighterNearMe(blob.ToString(), user).Equals("OK"));
+		//Assert.IsTrue(voiceController.makeItBrighterNearMe(blob.ToString()).Equals("OK"));
 	}
 
 	[Test ()]
@@ -397,7 +397,7 @@ public class Test
 
 		string blob = "Voice change";
 		string User = "User 1";
-		Assert.IsTrue(VoiceCommandController.SendBrighterAsync(blob, User).Equals(HttpStatusCode.OK));
+		Assert.IsTrue(VoiceCommandController.SendBrighterAsync(blob).Equals(HttpStatusCode.OK));
 	}
 
 	[Test()]

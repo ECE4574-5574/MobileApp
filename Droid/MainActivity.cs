@@ -108,7 +108,7 @@ public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicat
 					{
 						string jsonBlob = "";
 						string user = "user";
-						textBox.Text = voiceController.makeItBrighterNearMe(jsonBlob, user);	
+						textBox.Text = voiceController.makeItBrighterNearMe().ToString();	
 					}
 					else
 						textBox.Text = "No Command Recognized";

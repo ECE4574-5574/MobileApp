@@ -15,7 +15,7 @@ public class VoiceCommandController
 	}
 
 	//handles sending a user coordinate json blob to the decision system.
-	public string makeItBrighterNearMe(string json, string user)
+	public HttpResponseMessage makeItBrighterNearMe()
 	{
 
 		JObject blob = new JObject();
@@ -26,7 +26,7 @@ public class VoiceCommandController
 		blob["alt"] = 45.3454;
 		blob["time"] = timeStamp;
 
-		string result = SendBrighterAsync(blob.ToString(), user).StatusCode == HttpStatusCode.OK ? "OK" : "Not OK";
+		var result = SendBrighterAsync(blob.ToString());
 		return result;
 	}
 
@@ -35,7 +35,7 @@ public class VoiceCommandController
 		return value.ToString("yyyyMMddHHmmssfff");
 	}
 
-	public static HttpResponseMessage SendBrighterAsync(string packet, string user)
+	public static HttpResponseMessage SendBrighterAsync(string packet)
 	{
 
 		var client = new HttpClient();

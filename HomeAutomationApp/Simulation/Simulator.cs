@@ -172,7 +172,7 @@ public class Simulator
 				blob["userID"] = User;
 
 				var str = JsonConvert.SerializeObject(blob);
-				var retStatus = VoiceCommandController.SendBrighterAsync(str, User);
+				var retStatus = VoiceCommandController.SendBrighterAsync(str);
 				if(retStatus != null)
 				{
 					if(retStatus.StatusCode == HttpStatusCode.OK)
