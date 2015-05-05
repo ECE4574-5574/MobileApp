@@ -288,6 +288,7 @@ public class Test
 		InvalidationHelper help = new InvalidationHelper();
 		AffectedDevices ad = JsonConvert.DeserializeObject<AffectedDevices>(help.affectedDevices[0]);
 		AffectedDevices ad2 = JsonConvert.DeserializeObject<AffectedDevices>(help.affectedDevices[1]);
+		AffectedDevices ad3 = JsonConvert.DeserializeObject<AffectedDevices>(help.affectedDevices[2]);
 		Assert.IsTrue(!ad.Name.Equals(null));
 		Assert.IsTrue(!ad2.Name.Equals(null));
 
@@ -297,17 +298,41 @@ public class Test
 		IDeviceOutput u = new HouseOutput("", "");
 		Hats.Time.TimeFrame t = new Hats.Time.TimeFrame();
 
-		/*GarageDoor gd = new GarageDoor(k, u, t);
+		GarageDoor gd = new GarageDoor(k, u, t);
 		gd.Enabled = ad.Enabled;
 		gd.ID.RoomID = Convert.ToUInt64(ad.ID["roomID"]);
 		gd.ID.DeviceID = Convert.ToUInt64(ad.ID["deviceID"]);
 		gd.Enabled = ad.Enabled;
-		devices.Add(gd);*/
+		devices.Add(gd);
 
+		LightSwitch li = new LightSwitch(k, u, t);
+		li.Enabled = ad.Enabled;
+		li.ID.RoomID = Convert.ToUInt64(ad2.ID["roomID"]);
+		li.ID.DeviceID = Convert.ToUInt64(ad2.ID["deviceID"]);
+		devices.Add(li);
 
-		/*House.createHouse(Convert.ToInt32(ad.ID["houseID"]));*/
-		/*House.updateHouse(devices);*/
+		House.createHouse(Convert.ToInt32(ad.ID["houseID"]));
+		House.updateHouse(devices);
 
+		Assert.IsTrue(!House.getRoom((int)gd.ID.RoomID).getDevice((int)gd.ID.DeviceID).Equals(null)); //garage door is in house
+		Assert.IsTrue(((GarageDoor)House.getRoom((int)gd.ID.RoomID).getDevice((int)gd.ID.DeviceID)).Enabled); //garage door is enabled
+
+		Assert.IsTrue(!House.getRoom((int)li.ID.RoomID).getDevice((int)li.ID.DeviceID).Equals(null)); //light is in house
+		Assert.IsTrue(((LightSwitch)House.getRoom((int)li.ID.RoomID).getDevice((int)li.ID.DeviceID)).Enabled); //light is enabled
+
+		devices.Remove(li);
+
+		LightSwitch lupdate = new LightSwitch(k, u, t);
+		lupdate.Enabled = false;
+		lupdate.ID.RoomID = Convert.ToUInt64(ad3.ID["roomID"]);
+		lupdate.ID.DeviceID = Convert.ToUInt64(ad3.ID["deviceID"]);
+		devices.Add(lupdate);
+
+		House.updateHouse(devices);
+
+		Assert.IsTrue(!House.getRoom((int)li.ID.RoomID).getDevice((int)li.ID.DeviceID).Equals(null)); //light is in house
+		Assert.IsTrue(!(((LightSwitch)House.getRoom((int)li.ID.RoomID).getDevice((int)li.ID.DeviceID)).Enabled)); //light is DISABLED*/
+	
 
 		Console.WriteLine(ad.Name);
 	}
