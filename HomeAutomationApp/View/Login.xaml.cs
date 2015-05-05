@@ -10,19 +10,40 @@ using Xamarin.Forms;
 
 namespace HomeAutomationApp
 {
-	public partial class Login : ContentPage
+public partial class Login : ContentPage
+{
+	public Login ()
 	{
-		public Login ()
-		{
-			InitializeComponent ();
+		InitializeComponent ();
 
-			ClickButton.Clicked += (object sender, EventArgs e) => {
-				User.setUsername(UserField.Text);
-				User.setPassword(PassField.Text);
-				Navigation.PushAsync(new MainTabbedView());
+		ClickButton.Clicked += (object sender, EventArgs e) => {
+			if(UserField.Text == "" || PassField.Text == "")
+				Text.Text = "Provide a username and passoword";
+			else{
+				//Navigation.PushAsync(new MainTabbedView());
+				if(LoginController.RequestLogin(UserField.Text, PassField.Text)){
+					Text.Text = "Logged In";
+					User.setUsername(UserField.Text);
+					User.setPassword(PassField.Text);
+				}
+				else
+					Text.Text = "Not Recognized, are you registered?";
+			}
+		};
 
-			};
-		}
+		RegisterButton.Clicked += (object sender, EventArgs e) => {
+			if(UserField.Text == "" || PassField.Text == "")
+				Text.Text = "Provide a username and passoword";
+			else{
+				if(LoginController.RegisterUser(UserField.Text, PassField.Text)){
+					Text.Text = "Registration Completed!, Please Login";
+				}
+				else
+					Text.Text = "Registration Failed";
+			}
+
+		};
 	}
+}
 }
 

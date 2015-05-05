@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Net;
 
+
 namespace LogicUnitTests
 {
 [TestFixture ()]
@@ -41,7 +42,38 @@ public class Test
 		Assert.IsTrue(User.TestCrypt(password));
 	}
 
+	[Test ()]
+	public void TestLogin()
+	{
+		const string username = "test";
+		const string password = "test_password";
 
+		User.setUsername(username);
+		User.setPassword(password);
+
+		Assert.IsTrue(LoginController.RequestLogin(username, password));
+	}
+
+	[Test ()]
+	public void TestRegister()
+	{
+		const string username = "test";
+		const string password = "test_password";
+
+		Assert.IsTrue(LoginController.RegisterUser(username, password));
+	}
+
+	[Test ()]
+	public void TestRegisterRoom()
+	{
+		JObject room = new JObject();
+		room["name"] = "test";	
+		room["lat"] = 98.543;
+		room["long"] = 84.345;
+		room["alt"] = 45.3454;
+
+		Assert.IsTrue(AddRoomController.SendRoomAsync(room.ToString()).IsSuccessStatusCode);
+	}
 
 
 	[Test()]
@@ -129,19 +161,36 @@ public class Test
 			"}"));
 		Assert.IsTrue (InitParameters.getInstance().Password.Equals ("password"));
 	}
+		
+	[Test()]
+	public void GetUnregisteredDevices()
+	{
+		// instantiate the class from the devive api
+		AddDeviceModel testDeviceModel = new AddDeviceModel();
+
+		// get the list of devices
+		List<string> deviceList = testDeviceModel.getUnregisteredDevices();
+
+		// assert true if the list is not null
+		Assert.IsTrue(!deviceList.Equals(null));
+	}
 
 	[Test()]
-	public void TestGetDevicesAndRegister()
+	public void RegisterDevice()
 	{
 		// get the list of devices and check that it is not null
 		AddDeviceModel testDeviceModel = new AddDeviceModel();
 		List<string> deviceList = testDeviceModel.getUnregisteredDevices();
-		Assert.IsTrue(!deviceList.Equals(null));
-
-		// select the first device returns, and register it with a new name
-		api.Device registeredDevice = testDeviceModel.registerDevice("test name", deviceList[0]);
+		api.Device registeredDevice = testDeviceModel.registerDevice("test name", 12, deviceList[0]);
 		Assert.IsTrue(!registeredDevice.Equals(null));
 	}
+
+	[Test()]
+	public void GetLocationCoords()
+	{
+
+	}
+
 
 	[Test()]
 	public void TestHouseRoomsDevices() //this test simulates what would happen during a room invalidation
@@ -158,8 +207,8 @@ public class Test
 		Assert.IsTrue(House.getRooms().Count.Equals(10)); //make sure they were all added
 		List<Device> devices = new List<Device>();
 		Random ran = new Random();
-		IDeviceInput k = new HouseInput("","");
-		IDeviceOutput u = new HouseOutput("","");
+		IDeviceInput k = new HouseInput("", "");
+		IDeviceOutput u = new HouseOutput("", "");
 		Hats.Time.TimeFrame t = new Hats.Time.TimeFrame();
 
 		for(int i = 0; i < 10; i++) //populate a device list, simulating what we receive from the server
@@ -246,7 +295,7 @@ public class Test
 		List<Device> devices = new List<Device>();
 
 		IDeviceInput k = new HouseInput("","");
-		IDeviceOutput u = new HouseOutput("","");
+		IDeviceOutput u = new HouseOutput("", "");
 		Hats.Time.TimeFrame t = new Hats.Time.TimeFrame();
 
 		GarageDoor gd = new GarageDoor(k, u, t);

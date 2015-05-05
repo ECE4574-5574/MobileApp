@@ -55,7 +55,7 @@ namespace HomeAutomationApp.Droid
 //				// Publish the notification:
 //				const int notificationId = 0;
 //				notificationManager.Notify (notificationId, notification);
-				GCMModel.SendNotifyAsync();
+				GCMModel.SendNotifyAsync("Notify Me!!!!");
 			};
 
 

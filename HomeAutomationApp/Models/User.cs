@@ -7,6 +7,8 @@ public static class User
 {
 	private static string username;
 	private static string password;
+	private static string deviceID;
+	private static string userID;
 
 
 	public static string getUsername()
@@ -21,12 +23,34 @@ public static class User
 
 	public static void setPassword(string p)
 	{
-		password = GetHash(p);
+		//password = GetHash(p);
+		password = p;
 	}
 
 	public static string getPassword()
 	{
 		return password;
+	}
+
+	public static string getDeviceID()
+	{
+		return deviceID;
+	}
+
+	public static void setDeviceID(string id)
+	{
+		deviceID = id;
+	}
+
+	public static void setUserID(string id)
+	{
+		userID = id;
+	}
+
+	public static string getUserID()
+	{
+
+		return userID;
 	}
 
 	public static string GetHash(string inputString)
