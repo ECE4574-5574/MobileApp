@@ -30,6 +30,8 @@ public class HomeViewRenderer : PageRenderer
 	UILabel heardTextView;
 	UILabel statusTextView;
 	UIButton listenButton;
+	UIButton stopButton;
+
 
 	#endregion
 
@@ -111,6 +113,15 @@ public class HomeViewRenderer : PageRenderer
 			StartListening();
 		};
 
+		stopButton = UIButton.FromType(UIButtonType.RoundedRect);
+		stopButton.Frame = new RectangleF(10, 140, w - 20, 44);
+		stopButton.SetTitle("Finish", UIControlState.Normal);
+
+
+		stopButton.TouchUpInside += async (object sender, EventArgs ev) => {
+			StopListening();
+		};
+
 		var hostViewController = ViewController;
 
 		var viewController = new UIViewController();
@@ -120,6 +131,9 @@ public class HomeViewRenderer : PageRenderer
 		viewController.View.AddSubview(heardTextView);
 
 		viewController.View.AddSubview(listenButton);
+
+		viewController.View.AddSubview(stopButton);
+
 
 		hostViewController.AddChildViewController(viewController);
 		hostViewController.View.Add(viewController.View);

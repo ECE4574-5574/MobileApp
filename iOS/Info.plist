@@ -74,5 +74,9 @@
 	<string>Location Access</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Location Access</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 </dict>
 </plist>

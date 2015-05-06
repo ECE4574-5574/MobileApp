@@ -8,7 +8,7 @@ namespace HomeAutomationApp
 public class AddDeviceModel
 {
 	// TODO: temporary flag to bypass device API while it's stubbed
-	bool bypassDeviceApi = true;
+	bool bypassDeviceApi = false;
 
 	// TODO: this is a hack - replace houseId with actual value!
 	const UInt64 houseId = 2;
