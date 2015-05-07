@@ -7,6 +7,9 @@ using OpenEars;
 using Foundation;
 using OpenEars.Voices;
 using System.Drawing;
+using Newtonsoft.Json.Linq;
+using Geolocator.Plugin;
+using Newtonsoft.Json;
 
 [assembly: ExportRenderer(typeof(HomeAutomationApp.HomeView), typeof(HomeAutomationApp.iOS.HomeViewRenderer))]
 
@@ -31,6 +34,7 @@ public class HomeViewRenderer : PageRenderer
 	UILabel statusTextView;
 	UIButton listenButton;
 	UIButton stopButton;
+
 
 
 	#endregion
@@ -62,7 +66,7 @@ public class HomeViewRenderer : PageRenderer
 			pathToLanguageModel = generator.PathToSuccessfullyGeneratedLanguageModelWithRequestedName("HomeAutomationLanguageModel");
 			pathToDictionary = generator.PathToSuccessfullyGeneratedDictionaryWithRequestedName("HomeAutomationLanguageModel");
 		}
-
+			
 	}
 	#endregion
 
@@ -106,7 +110,7 @@ public class HomeViewRenderer : PageRenderer
 
 		listenButton = UIButton.FromType(UIButtonType.RoundedRect);
 		listenButton.Frame = new RectangleF(10, 120, w - 20, 44);
-		listenButton.SetTitle("Submit", UIControlState.Normal);
+		listenButton.SetTitle("Listen", UIControlState.Normal);
 
 
 		listenButton.TouchUpInside += async (object sender, EventArgs ev) => {
@@ -114,7 +118,7 @@ public class HomeViewRenderer : PageRenderer
 		};
 
 		stopButton = UIButton.FromType(UIButtonType.RoundedRect);
-		stopButton.Frame = new RectangleF(10, 140, w - 20, 44);
+		stopButton.Frame = new RectangleF(10, 180, w - 20, 44);
 		stopButton.SetTitle("Finish", UIControlState.Normal);
 
 
@@ -153,8 +157,30 @@ public class HomeViewRenderer : PageRenderer
 
 	public void UpdateText (String text)
 	{
-		if(heardTextView != null)
-			heardTextView.Text = text;
+		if(text.Equals("BRIGHTER NEAR ME"))
+		{
+			JObject blob = new JObject();
+			String timeStamp = VoiceCommandController.GetTimestamp(DateTime.Now);
+
+			var location = CrossGeolocator.Current.GetPositionAsync(timeout: 1000).Result;
+
+			blob["lat"] = location.Latitude;
+			blob["long"] = location.Longitude; 
+			blob["alt"] = location.Altitude;
+			blob["time"] = timeStamp;
+
+			VoiceCommandController.SendBrighterAsync(JsonConvert.SerializeObject(blob));
+
+			if(heardTextView != null)
+				heardTextView.Text = "Brighten at " + blob["lat"] + ", " + blob["long"];
+
+			Say("Making it brighter near you");
+		}
+		else
+		{
+			if(heardTextView != null)
+				heardTextView.Text = text;
+		}
 	}
 
 	public void UpdateButtonStates (bool hidden1, bool hidden2, bool hidden3, bool hidden4)
@@ -209,8 +235,7 @@ public class HomeViewRenderer : PageRenderer
 
 		public override void PocketsphinxDidReceiveHypothesis (NSString hypothesis, NSString recognitionScore, NSString utteranceID)
 		{
-			controller.UpdateText ("Heard: " + hypothesis + " with Score: " + recognitionScore + " utteranceId: " + utteranceID);
-			controller.Say ("You said: " + hypothesis);
+			controller.UpdateText (hypothesis);
 		}
 
 		public override void AudioSessionInterruptionDidBegin ()

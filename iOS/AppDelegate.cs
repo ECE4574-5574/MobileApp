@@ -52,15 +52,14 @@ public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsAppli
 	public override void DidReceiveRemoteNotification(UIApplication application, NSDictionary userInfo, Action<UIBackgroundFetchResult> completionHandler)
 	{
 		Console.WriteLine(userInfo.ToString());
-		NSObject inAppMessage;
 
-		bool success = userInfo.TryGetValue(new NSString("inAppMessage"), out inAppMessage);
+		NSObject inAppMessage = userInfo.ValueForKeyPath(new NSString("aps.alert"));
 
-		if(success)
-		{
-			var alert = new UIAlertView("Got push notification", inAppMessage.ToString(), null, "OK", null);
-			alert.Show();
-		}
+		var alert = new UIAlertView("Home Automation", inAppMessage.ToString(), null, "OK", null);
+		alert.Show();
+
+//		InvalidationController.invalidate();
+
 	}
 
 }
